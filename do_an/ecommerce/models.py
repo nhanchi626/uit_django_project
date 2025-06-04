@@ -1,8 +1,5 @@
 from django.db import models
-
 # Create your models here.
-from django.db import models
-
 # 1. Bảng Roles – Vai trò người dùng
 class Role(models.Model):
     roleID = models.AutoField(primary_key=True)
