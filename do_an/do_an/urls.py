@@ -19,5 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('ecommerce.urls')),  # thêm đường dẫn đến ứng dụng ecommerce
+    path('api/', include('ecommerce.urls')),  # thêm đường dẫn đến ứng dụng ecommerce
 ]
