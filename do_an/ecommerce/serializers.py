@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import serializers
-from .models import User
+from .models import User, Product, ProductCategory
 # Custom lại TokenObtainPairSerializer để sử dụng email thay vì username
 
 class CustomTokenObtainSerializer(serializers.Serializer):
@@ -71,3 +71,13 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ['userPassword']  # Exclude password field from serialization
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductCategory
+        exclude = []
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        exclude = []
