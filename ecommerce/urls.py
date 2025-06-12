@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from . import views
 from .views import RegisterView, CustomTokenObtainView, ProductDetailView, UserListView, UserDetailView, \
-    ProductCategoryListView, ProductCategoryDetailView, ProductListView, RoleListView, RoleDetailView, RoleCreateView, RoleDeleteView
+    ProductCategoryListView, ProductCategoryDetailView, ProductListView, RoleListView, RoleDetailView, RoleCreateView, RoleDeleteView, OrderList, OrderView
 
 urlpatterns = [
     path('', views.member_list, name='member_list'),
@@ -19,5 +19,7 @@ urlpatterns = [
     path('roles/<int:id>/', RoleDetailView.as_view(), name='role_detail'),
     path('createroles/', RoleCreateView.as_view(), name='role_create'),
     path('deleteroles/<int:id>/', RoleDeleteView.as_view(), name='role_delete'),
+    path('api/orders/', OrderList.as_view(), name='order-list'),
+    path('api/orders/<int:pk>/', OrderView.as_view(), name='order-view'),
 ]
 
