@@ -4,9 +4,9 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import User, Product, ProductCategory, Role, Order
+from .models import User, Product, ProductCategory, Role, Order, OrderDetail
 from .serializers import RegisterSerializer, CustomTokenObtainSerializer, ProductCategorySerializer, UserSerializer, \
-    ProductSerializer, RoleSerializer, OrderSerializer
+    ProductSerializer, RoleSerializer, OrderSerializer, OrderDetailSerializer
 from django.shortcuts import get_object_or_404
 
 
@@ -203,3 +203,49 @@ class OrderView(APIView):
         order = get_object_or_404(Order, pk=pk)
         order.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class OrderDetailListCreateView(APIView):
+    def get(self, request, order_id):
+        details = OrderDetail.objects.filter(detailOrderID=order_id)
+        serializer = OrderDetailSerializer(details, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, order_id):
+        data = request.data.copy()
+        data['detailOrderID'] = order_id
+        serializer = OrderDetailSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class OrderDetailUpdateDeleteView(APIView):
+    def put(self, request, order_id, detail_id):
+        try:
+            detail = OrderDetail.objects.get(detailOrderID=order_id, detailID=detail_id)
+        except OrderDetail.DoesNotExist:
+            return Response({"error": "Chi tiết đơn hàng không tồn tại."}, status=404)
+        serializer = OrderDetailSerializer(detail, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, order_id, detail_id):
+        try:
+            detail = OrderDetail.objects.get(detailOrderID=order_id, detailID=detail_id)
+        except OrderDetail.DoesNotExist:
+            return Response({"error": "Chi tiết đơn hàng không tồn tại."}, status=404)
+        serializer = OrderDetailSerializer(detail, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, order_id, detail_id):
+        try:
+            detail = OrderDetail.objects.get(detailOrderID=order_id, detailID=detail_id)
+            detail.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except OrderDetail.DoesNotExist:
+            return Response({"error": "Chi tiết đơn hàng không tồn tại."}, status=404)

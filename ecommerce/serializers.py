@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import serializers
-from .models import User, Product, ProductCategory, Role, Order
+from .models import User, Product, ProductCategory, Role, Order, OrderDetail
 # Custom lại TokenObtainPairSerializer để sử dụng email thay vì username
 
 class CustomTokenObtainSerializer(serializers.Serializer):
@@ -90,4 +90,9 @@ class RoleSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
+        fields = '__all__'
+
+class OrderDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderDetail
         fields = '__all__'
