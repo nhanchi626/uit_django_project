@@ -181,6 +181,8 @@ class OrderView(APIView):
     def get(self, request, pk):
         order = get_object_or_404(Order, pk=pk)
         serializer = OrderSerializer(order)
+        print(order)
+        print(pk)
         return Response(serializer.data)
 
     def put(self, request, pk):
@@ -207,12 +209,25 @@ class OrderView(APIView):
 class OrderDetailListCreateView(APIView):
     def get(self, request, order_id):
         details = OrderDetail.objects.filter(detailOrderID=order_id)
+        print(order_id)
         serializer = OrderDetailSerializer(details, many=True)
         return Response(serializer.data)
 
     def post(self, request, order_id):
         data = request.data.copy()
         data['detailOrderID'] = order_id
+        
+          # Truy vấn sản phẩm từ cơ sở dữ liệu 
+        try:
+            # Lấy sản phẩm đầu tiên trong cơ sở dữ liệu 
+            product = Product.objects.first()  
+        except Product.DoesNotExist:
+            return Response({'error': 'No products available in the database.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Gán product vào data (ID của product được liên kết với detailProductID)
+        data['detailProductID'] = product.productID  # Liên kết với productID từ cơ sở dữ liệu
+
+
         serializer = OrderDetailSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
